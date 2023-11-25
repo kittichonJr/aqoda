@@ -30,6 +30,41 @@ export class Hotel {
         return this.rooms.filter((roomNumber) => !bookedRoom.includes(roomNumber))
     }
 
+    public getAllListOfGuest() {
+        return this.booking.filter((booking) => booking.status === 'checkIn').map((booking) => booking.guestName)
+    }
+
+    public getListOfGuestByAge(operator: string, age: number) {
+        const checkedInBookingList = this.booking.filter((booking) => booking.status === 'checkIn')
+        switch (operator) {
+            case '<': return checkedInBookingList.filter((booking) => booking.guestAge < age).map((booking) => booking.guestName)
+            case '>': return checkedInBookingList.filter((booking) => booking.guestAge > age).map((booking) => booking.guestName)
+
+            default: return 'Operator not found.'
+        }
+    }
+
+    public getGuestByFloor(floor: number) {
+        const listOfFloor = this.rooms.filter((room) => room.
+            toString()
+            .slice(0, floor.toString().length) === floor.toString())
+        const checkedInBookingList = this.booking.filter((booking) => booking.status === 'checkIn')
+        const listOfRoomNumberWithSameFloor = checkedInBookingList.filter((booking) => listOfFloor.includes(booking.roomNumber))
+
+        return listOfRoomNumberWithSameFloor.map((booking) => booking.guestName)
+
+    }
+
+    public getGuestNameByRoomNumber(roomNumber: number) {
+        const targetBooking = this.booking
+            .filter((booking) => booking.status === 'checkIn')
+            .find((booking) => booking.roomNumber === roomNumber)
+        if (targetBooking) {
+            return targetBooking.guestName
+        }
+        return 'Room not found.'
+    }
+
     public createBooking(roomNumber: number, guestName: string, guestAge: number) {
         const newBooking = new Booking(this, roomNumber, guestName, guestAge)
         if (newBooking.bookingId) {
@@ -127,4 +162,8 @@ hotel1.createBooking(101, 'Thanos', 65)
 hotel1.checkout(1, 'TonyStark')
 hotel1.checkout(5, 'TonyStark')
 hotel1.checkout(4, 'TonyStark')
+console.log(hotel1.getAllListOfGuest())
+console.log(hotel1.getGuestNameByRoomNumber(203))
+console.log(hotel1.getListOfGuestByAge("<", 18))
+console.log(hotel1.getGuestByFloor(2))
 // console.log(hotel1.booking)
