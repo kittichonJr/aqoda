@@ -1,9 +1,9 @@
 const fs = require('fs')
 
 class Command {
-  public name:string
-  public params:(string | number)[]
-  constructor(name:string, params:(string | number)[]) {
+  public name: string
+  public params: (string | number)[]
+  constructor(name: string, params: (string | number)[]) {
     this.name = name
     this.params = params
   }
@@ -29,14 +29,14 @@ function main() {
   })
 }
 
-function getCommandsFromFileName(fileName:string): Command[] {
+function getCommandsFromFileName(fileName: string): Command[] {
   const file = fs.readFileSync(fileName, 'utf-8')
 
   return file
     .split('\n')
-    .map((line:string) => line.split(' '))
+    .map((line: string) => line.split(' '))
     .map(
-      ([commandName, ...params]:string[]) =>
+      ([commandName, ...params]: string[]) =>
         new Command(
           commandName,
           params.map(param => {
