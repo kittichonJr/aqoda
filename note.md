@@ -2,6 +2,7 @@ class
 
 Hotel
     - rooms: number[]
+    - Booking: Booking
 
 Booking
     - roomNumber number
