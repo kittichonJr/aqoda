@@ -90,7 +90,7 @@ export default class Hotel {
                 return guestNames
             }
 
-            default: return 'Operator not found.'
+            default: return ['Operator not found.']
         }
     }
 

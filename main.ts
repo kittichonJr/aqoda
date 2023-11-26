@@ -29,7 +29,7 @@ function main() {
       }
       case 'list_available_rooms': {
         const listOfAvailableRooms = hotel1.getAllAvailableRoom()
-        console.log(listOfAvailableRooms)
+        console.log(listOfAvailableRooms.join(', '))
         return
       }
       case 'checkout': {
@@ -39,7 +39,7 @@ function main() {
       }
       case 'list_guest': {
         const listOfGuestName = hotel1.getAllListOfGuest()
-        console.log(listOfGuestName)
+        console.log(listOfGuestName.join(', '))
         return
       }
       case 'get_guest_in_room': {
@@ -51,13 +51,13 @@ function main() {
       case 'list_guest_by_age': {
         const [operator, age] = command.params
         const listOfGuestName = hotel1.getListOfGuestByAge(String(operator), Number(age))
-        console.log(listOfGuestName)
+        console.log(listOfGuestName.join(', '))
         return
       }
       case 'list_guest_by_floor': {
         const [floor] = command.params
         const listOfGuestNameByFloor = hotel1.getGuestByFloor(Number(floor))
-        console.log(listOfGuestNameByFloor)
+        console.log(listOfGuestNameByFloor.join(', '))
         return
       }
       case 'checkout_guest_by_floor': {
