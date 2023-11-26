@@ -1,10 +1,14 @@
 export class Hotel {
+    public floor: number
+    public roomEachFloor: number
     public rooms: number[]
     public booking: Booking[]
 
     constructor(floor: number, numberOfRoomEachFloor: number) {
         this.rooms = []
         this.booking = []
+        this.floor = floor
+        this.roomEachFloor = numberOfRoomEachFloor
         this.createRooms(floor, numberOfRoomEachFloor)
     }
 
@@ -69,6 +73,7 @@ export class Hotel {
         const newBooking = new Booking(this, roomNumber, guestName, guestAge)
         if (newBooking.bookingId) {
             this.booking.push(newBooking)
+            return newBooking
         }
     }
 
@@ -86,6 +91,25 @@ export class Hotel {
         })
 
         console.log(`Room ${listOfBookingByFloor.map((booking) => booking.roomNumber).join(', ')} are checkout.`)
+    }
+
+    public bookingByFloor(floor: number, guestName: string, guestAge: number) {
+        const listOfFloor = this.rooms.filter((room) => room.
+            toString()
+            .slice(0, floor.toString().length) === floor.toString())
+        const allAvailableRoom = this.getAllAvailableRoom()
+        const availableRoomByFloor = allAvailableRoom.filter((roomNumber) => listOfFloor.includes(roomNumber))
+        if (availableRoomByFloor.length === this.roomEachFloor) {
+            // can book
+            const newBookingList = availableRoomByFloor
+                .map((roomNumber) => this.createBooking(roomNumber, guestName, guestAge))
+                .filter((booking) => booking && booking.bookingId)
+            console.log(`Room ${newBookingList.map((booking) => booking!.roomNumber).join(', ')} is booked by ${guestName} with keycard number ${newBookingList.map((booking) => booking!.keyCardNumber).join(', ')}.`)
+
+        } else {
+            console.log(`Cannot book floor ${floor} for ${guestName}.`)
+        }
+
     }
 
     public checkout(keyCardNumber: number, guestName: string) {
@@ -183,4 +207,6 @@ console.log(hotel1.getGuestNameByRoomNumber(203))
 console.log(hotel1.getListOfGuestByAge("<", 18))
 console.log(hotel1.getGuestByFloor(2))
 hotel1.checkoutByFloor(1)
+hotel1.bookingByFloor(1, 'TonyStark', 48)
+hotel1.bookingByFloor(2, 'TonyStark', 48)
 // console.log(hotel1.booking)
