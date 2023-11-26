@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "target": "es6",
+        "sourceMap": true,
+        "inlineSources": true,
+        "esModuleInterop": true,
+    },
+    "compileOnSave": true,
+    "exclude": [
+        "node_modules"
+    ]
+}

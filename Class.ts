@@ -1,4 +1,4 @@
-export class Hotel {
+export default class Hotel {
     public floor: number
     public roomEachFloor: number
     public rooms: number[]
@@ -27,22 +27,68 @@ export class Hotel {
         }
     }
 
+    public createBooking(roomNumber: number, guestName: string, guestAge: number) {
+        const newBooking = new Booking(this, roomNumber, guestName, guestAge)
+        if (newBooking.bookingId) {
+            this.booking.push(newBooking)
+            console.log(`Room ${roomNumber} is booked by ${guestName} with keycard number ${newBooking.keyCardNumber}.`)
+            return newBooking
+        }
+    }
+
+    public createBookingByFloor(floor: number, guestName: string, guestAge: number) {
+        const listOfFloor = this.rooms.filter((room) => room.
+            toString()
+            .slice(0, floor.toString().length) === floor.toString())
+        const allAvailableRoom = this.getAllAvailableRoom()
+        const availableRoomByFloor = allAvailableRoom.filter((roomNumber) => listOfFloor.includes(roomNumber))
+        if (availableRoomByFloor.length === this.roomEachFloor) {
+            const newBookingList = availableRoomByFloor
+                .map((roomNumber) => {
+                    const newBooking = new Booking(this, roomNumber, guestName, guestAge)
+                    if (newBooking.bookingId) {
+                        this.booking.push(newBooking)
+                    }
+                    return newBooking
+                })
+                .filter((booking) => booking.bookingId)
+            console.log(`Room ${newBookingList.map((booking) => booking!.roomNumber).join(', ')} is booked with keycard number ${newBookingList.map((booking) => booking!.keyCardNumber).join(', ')}.`)
+        } else {
+            console.log(`Cannot book floor ${floor} for ${guestName}.`)
+        }
+    }
+
     public getAllAvailableRoom() {
         const bookedRoom = this.booking
             .filter((booking) => booking.status === 'checkIn')
             .map((booking) => booking.roomNumber)
-        return this.rooms.filter((roomNumber) => !bookedRoom.includes(roomNumber))
+        const availableRooms = this.rooms.filter((roomNumber) => !bookedRoom.includes(roomNumber))
+        return availableRooms
     }
 
     public getAllListOfGuest() {
-        return this.booking.filter((booking) => booking.status === 'checkIn').map((booking) => booking.guestName)
+        const listOfGuest = this.booking
+            .filter((booking) => booking.status === 'checkIn')
+            .map((booking) => booking.guestName)
+        return listOfGuest
     }
 
     public getListOfGuestByAge(operator: string, age: number) {
-        const checkedInBookingList = this.booking.filter((booking) => booking.status === 'checkIn')
+        const checkedInBookingList = this.booking
+            .filter((booking) => booking.status === 'checkIn')
         switch (operator) {
-            case '<': return checkedInBookingList.filter((booking) => booking.guestAge < age).map((booking) => booking.guestName)
-            case '>': return checkedInBookingList.filter((booking) => booking.guestAge > age).map((booking) => booking.guestName)
+            case '<': {
+                const guestNames = checkedInBookingList
+                    .filter((booking) => booking.guestAge < age)
+                    .map((booking) => booking.guestName)
+                return guestNames
+            }
+            case '>': {
+                const guestNames = checkedInBookingList
+                    .filter((booking) => booking.guestAge > age)
+                    .map((booking) => booking.guestName)
+                return guestNames
+            }
 
             default: return 'Operator not found.'
         }
@@ -55,8 +101,8 @@ export class Hotel {
         const checkedInBookingList = this.booking.filter((booking) => booking.status === 'checkIn')
         const listOfRoomNumberWithSameFloor = checkedInBookingList.filter((booking) => listOfFloor.includes(booking.roomNumber))
 
-        return listOfRoomNumberWithSameFloor.map((booking) => booking.guestName)
-
+        const guestNames = listOfRoomNumberWithSameFloor.map((booking) => booking.guestName)
+        return guestNames
     }
 
     public getGuestNameByRoomNumber(roomNumber: number) {
@@ -64,18 +110,12 @@ export class Hotel {
             .filter((booking) => booking.status === 'checkIn')
             .find((booking) => booking.roomNumber === roomNumber)
         if (targetBooking) {
-            return targetBooking.guestName
+            const guestName = targetBooking.guestName
+            return guestName
         }
         return 'Room not found.'
     }
 
-    public createBooking(roomNumber: number, guestName: string, guestAge: number) {
-        const newBooking = new Booking(this, roomNumber, guestName, guestAge)
-        if (newBooking.bookingId) {
-            this.booking.push(newBooking)
-            return newBooking
-        }
-    }
 
     public checkoutByFloor(floor: number) {
         const listOfFloor = this.rooms.filter((room) => room.
@@ -91,25 +131,6 @@ export class Hotel {
         })
 
         console.log(`Room ${listOfBookingByFloor.map((booking) => booking.roomNumber).join(', ')} are checkout.`)
-    }
-
-    public bookingByFloor(floor: number, guestName: string, guestAge: number) {
-        const listOfFloor = this.rooms.filter((room) => room.
-            toString()
-            .slice(0, floor.toString().length) === floor.toString())
-        const allAvailableRoom = this.getAllAvailableRoom()
-        const availableRoomByFloor = allAvailableRoom.filter((roomNumber) => listOfFloor.includes(roomNumber))
-        if (availableRoomByFloor.length === this.roomEachFloor) {
-            // can book
-            const newBookingList = availableRoomByFloor
-                .map((roomNumber) => this.createBooking(roomNumber, guestName, guestAge))
-                .filter((booking) => booking && booking.bookingId)
-            console.log(`Room ${newBookingList.map((booking) => booking!.roomNumber).join(', ')} is booked by ${guestName} with keycard number ${newBookingList.map((booking) => booking!.keyCardNumber).join(', ')}.`)
-
-        } else {
-            console.log(`Cannot book floor ${floor} for ${guestName}.`)
-        }
-
     }
 
     public checkout(keyCardNumber: number, guestName: string) {
@@ -135,7 +156,7 @@ export class Hotel {
 
 }
 
-export class Booking {
+class Booking {
     public bookingId: number
     public roomNumber: number
     public guestName: string
@@ -162,7 +183,6 @@ export class Booking {
             this.guestAge = guestAge
             this.keyCardNumber = this.getKeyCardNumber(hotel)
             this.status = 'checkIn'
-            console.log(`Room ${this.roomNumber} is booked by ${this.guestName} with keycard number ${this.keyCardNumber}.`)
         }
     }
 
@@ -186,27 +206,3 @@ export class Booking {
     }
 
 }
-
-const hotel1 = new Hotel(2, 3)
-console.log(hotel1.rooms)
-hotel1.createBooking(203, 'Thor', 32)
-hotel1.createBooking(101, 'PeterParker', 16)
-hotel1.createBooking(102, 'StephenStrange', 36)
-hotel1.createBooking(201, 'TonyStark', 48)
-hotel1.createBooking(202, 'TonyStark', 48)
-hotel1.createBooking(203, 'TonyStark', 48)
-console.log(hotel1.getAllAvailableRoom())
-hotel1.checkout(4, 'TonyStark')
-hotel1.createBooking(103, 'TonyStark', 48)
-hotel1.createBooking(101, 'Thanos', 65)
-hotel1.checkout(1, 'TonyStark')
-hotel1.checkout(5, 'TonyStark')
-hotel1.checkout(4, 'TonyStark')
-console.log(hotel1.getAllListOfGuest())
-console.log(hotel1.getGuestNameByRoomNumber(203))
-console.log(hotel1.getListOfGuestByAge("<", 18))
-console.log(hotel1.getGuestByFloor(2))
-hotel1.checkoutByFloor(1)
-hotel1.bookingByFloor(1, 'TonyStark', 48)
-hotel1.bookingByFloor(2, 'TonyStark', 48)
-// console.log(hotel1.booking)
