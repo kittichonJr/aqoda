@@ -72,6 +72,22 @@ export class Hotel {
         }
     }
 
+    public checkoutByFloor(floor: number) {
+        const listOfFloor = this.rooms.filter((room) => room.
+            toString()
+            .slice(0, floor.toString().length) === floor.toString())
+        const allCheckedInBooking = this.booking.filter((booking) => booking.status === 'checkIn')
+        const listOfBookingByFloor = allCheckedInBooking.filter((booking) => listOfFloor.includes(booking.roomNumber))
+        listOfBookingByFloor.forEach((booking) => {
+            const bookingIndex = this.booking.findIndex((sourceBooking) => sourceBooking.bookingId === booking.bookingId)
+            if (bookingIndex) {
+                this.booking[bookingIndex].status = 'checkOut'
+            }
+        })
+
+        console.log(`Room ${listOfBookingByFloor.map((booking) => booking.roomNumber).join(', ')} are checkout.`)
+    }
+
     public checkout(keyCardNumber: number, guestName: string) {
         const checkedInBookingInfoByKeyCardNumber = this.booking
             .filter((booking) => booking.status === 'checkIn')
@@ -166,4 +182,5 @@ console.log(hotel1.getAllListOfGuest())
 console.log(hotel1.getGuestNameByRoomNumber(203))
 console.log(hotel1.getListOfGuestByAge("<", 18))
 console.log(hotel1.getGuestByFloor(2))
+hotel1.checkoutByFloor(1)
 // console.log(hotel1.booking)
